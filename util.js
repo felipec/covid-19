@@ -57,7 +57,7 @@ async function start(callback) {
     { id: 'Japan', color: 'hsl(180, 75%, 50%)' },
   ];
 
-  if (r = window.location.href.match(/\?country=(.*)$/)) {
+  if (r = window.location.href.match(/\?country=([^&]+)/)) {
     const n = {
       id: r[1],
       color: 'hsl(270, 75%, 50%)',
