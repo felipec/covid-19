@@ -58,7 +58,19 @@ async function start(callback) {
     { id: 'Japan', color: 'hsl(240, 75%, 50%)' },
   ];
 
-  if (r = window.location.href.match(/\?country=([^&]+)/)) {
+  if (r = window.location.href.match(/[?&]extra=([^&]+)/)) {
+    const extra = r[1].split(',');
+    for (const id of extra) {
+      const n = {
+        id: id,
+        color: 'hsl(300, 75%, 50%, 50%)',
+        params: { pointStyle: 'rect' },
+      };
+      countries.push(n);
+    }
+  }
+
+  if (r = window.location.href.match(/[?&]country=([^&]+)/)) {
     const n = {
       id: r[1],
       color: 'hsl(270, 75%, 50%)',
