@@ -9,6 +9,7 @@ var chart = new Chart('chart', {
   options: {
     resposive: true,
     maintainAspectRatio: false,
+    aspectRatio: 0.5,
     elements: {
       line: {
         fill: false,
