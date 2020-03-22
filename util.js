@@ -63,7 +63,7 @@ async function start(callback) {
     for (const id of extra) {
       const n = {
         id: id,
-        color: 'hsl(300, 75%, 50%, 50%)',
+        color: 'hsl(320, 75%, 50%, 50%)',
         params: { pointStyle: 'rect' },
       };
       countries.push(n);
@@ -73,7 +73,7 @@ async function start(callback) {
   if (r = window.location.href.match(/[?&]country=([^&]+)/)) {
     const n = {
       id: r[1],
-      color: 'hsl(270, 75%, 50%)',
+      color: 'hsl(280, 75%, 50%)',
       params: { borderWidth: 4, pointStyle: 'rectRot' },
     };
     countries = countries.filter(e => e.id != n.id);
