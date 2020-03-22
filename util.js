@@ -64,6 +64,7 @@ async function start(callback) {
       color: 'hsl(270, 75%, 50%)',
       params: { borderWidth: 4, pointStyle: 'rectRot' },
     };
+    countries = countries.filter(e => e.id != n.id);
     countries.unshift(n);
   }
 
