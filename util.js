@@ -50,12 +50,12 @@ async function start(callback) {
 
   let countries = [
     { id: 'Italy', color: 'hsl(0, 75%, 50%)' },
-    { id: 'Iran', color: 'hsl(30, 75%, 50%)' },
-    { id: 'Spain', color: 'hsl(60, 75%, 50%)' },
-    { id: 'US', color: 'hsl(90, 75%, 50%)' },
-    { id: 'United Kingdom', color: 'hsl(120, 75%, 50%)' },
-    { id: 'Korea, South', color: 'hsl(150, 75%, 50%)' },
-    { id: 'Japan', color: 'hsl(180, 75%, 50%)' },
+    { id: 'Iran', color: 'hsl(40, 75%, 50%)' },
+    { id: 'Spain', color: 'hsl(80, 75%, 50%)' },
+    { id: 'US', color: 'hsl(120, 75%, 50%)' },
+    { id: 'United Kingdom', color: 'hsl(160, 75%, 50%)' },
+    { id: 'Korea, South', color: 'hsl(200, 75%, 50%)' },
+    { id: 'Japan', color: 'hsl(240, 75%, 50%)' },
   ];
 
   if (r = window.location.href.match(/\?country=([^&]+)/)) {
