@@ -81,11 +81,10 @@ async function start(callback) {
   }
 
   for (const {id, color, params} of countries) {
-    const result = data[id].map(e => callback(e.confirmed)).filter(e => e);
 
     const dataset = {
       label: id,
-      data: result,
+      data: callback(data[id]),
       borderColor: color,
       backgroundColor: color,
     };

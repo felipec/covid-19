@@ -20,11 +20,13 @@
   <script>
     chart.options.scales.yAxes[0].scaleLabel.labelString = 'Growth factor';
 
-    let prev;
-    start((confirmed) => {
-      const r = confirmed >= 100 && confirmed / prev;
-      prev = confirmed;
-      return r;
+    start(data => {
+      let prev;
+      return data.map(e => {
+        const r = e.confirmed / prev;
+        prev = e.confirmed;
+        return e.confirmed >= 100 && r;
+      }).filter(e => e);
     });
   </script>
 

@@ -30,7 +30,9 @@
       },
     });
 
-    start((confirmed) => { return confirmed >= 100 && confirmed; });
+    start(data => {
+      return data.map(e => e.confirmed).filter(e => e >= 100);
+    });
   </script>
 
 </html>
