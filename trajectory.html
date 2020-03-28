@@ -19,16 +19,7 @@
 
   <script>
     chart.options.scales.yAxes[0].scaleLabel.labelString = 'Number of cases';
-
-    Object.assign(chart.options.scales.yAxes[0], {
-      type: 'logarithmic',
-      ticks: {
-        userCallback: (value, index, values) => {
-          if (Number.isInteger(Math.log10(value))) return number.format(value);
-          return null;
-        },
-      },
-    });
+    chart.options.scales.yAxes[0].type = 'logarithmic';
 
     start(data => {
       return data.map(e => e.confirmed).filter(e => e >= 100);

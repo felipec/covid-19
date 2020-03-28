@@ -29,15 +29,12 @@ var chart = new Chart('chart', {
     },
     scales: {
       xAxes: [{
-        scaleLabel: {
-          display: true,
-          labelString: 'Days after 100 cases',
-        },
+        scaleLabel: { labelString: 'Days after 100 cases', display: true, },
       }],
       yAxes: [{
-        scaleLabel: {
-          display: true,
-          labelString: '',
+        scaleLabel: { display: true, },
+        ticks: {
+          callback: (value) => number.format(value),
         },
       }],
     },
@@ -98,5 +95,11 @@ async function start(callback) {
 
   const max_days = chart.data.datasets.reduce((accum, e) => Math.max(accum, e.data.length), 0);
   chart.data.labels = Array.apply(null, Array(max_days)).map((e, i) => i + 1);
+  const axis = chart.options.scales.yAxes[0];
+  if (axis.type == 'logarithmic') {
+      axis.ticks.callback = (value) => {
+        return Number.isInteger(Math.log10(value)) ? number.format(value) : null;
+      };
+  }
   chart.update();
 }
