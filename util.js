@@ -55,7 +55,6 @@ async function start(callback) {
     { id: 'Korea, South', color: 'hsl(180, 75%, 50%)' },
     { id: 'Japan', color: 'hsl(200, 75%, 50%)' },
     { id: 'Singapore', color: 'hsl(210, 75%, 50%)' },
-
   ];
 
   if (r = window.location.href.match(/[?&]extra=([^&]+)/)) {
@@ -81,7 +80,6 @@ async function start(callback) {
   }
 
   for (const {id, color, params} of countries) {
-
     const dataset = {
       label: id,
       data: callback(data[id]),
@@ -97,9 +95,9 @@ async function start(callback) {
   chart.data.labels = Array.apply(null, Array(max_days)).map((e, i) => i + 1);
   const axis = chart.options.scales.yAxes[0];
   if (axis.type == 'logarithmic') {
-      axis.ticks.callback = (value) => {
-        return Number.isInteger(Math.log10(value)) ? number.format(value) : null;
-      };
+    axis.ticks.callback = (value) => {
+      return Number.isInteger(Math.log10(value)) ? number.format(value) : null;
+    };
   }
   chart.update();
 }
