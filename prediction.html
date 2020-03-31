@@ -29,7 +29,7 @@
     };
 
     function model(n, factor, factor_change, confirmed, day, recovered = 0) {
-      let r0 = ((factor - 1) * recovery_days) + 1;
+      let r0 = (factor - 1) * recovery_days;
       let g = (1 / recovery_days), b = r0 * g;
 
       let result = [];
