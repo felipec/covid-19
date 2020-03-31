@@ -81,8 +81,13 @@
       });
 
       function getGrowthFactor(data, day) {
-        const span = recovery_days | 0;
-        return (data[day].confirmed / data[day - span].confirmed) ** (1 / span);
+        const span = 10;
+        let sum = 0, total = 0;
+        for (let x = day - span; x <= day; x += 1) {
+          sum += data[x].confirmed;
+          total += data[x - 1].confirmed;
+        }
+        return sum / total;
       }
 
       const prev_days = 3;
