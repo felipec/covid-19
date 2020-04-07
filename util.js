@@ -61,7 +61,7 @@ async function start(callback) {
     const extra = r[1].split(',');
     for (const id of extra) {
       const n = {
-        id: id,
+        id: decodeURI(id),
         color: 'hsl(320, 75%, 50%, 50%)',
         params: { pointStyle: 'rect' },
       };
@@ -71,7 +71,7 @@ async function start(callback) {
 
   if (r = window.location.href.match(/[?&]country=([^&]+)/)) {
     const n = {
-      id: r[1],
+      id: decodeURI(r[1]),
       color: 'hsl(280, 75%, 50%)',
       params: { borderWidth: 4, pointStyle: 'rectRot' },
     };

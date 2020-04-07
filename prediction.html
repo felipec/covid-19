@@ -64,7 +64,7 @@
       let country = 'US';
 
       if (r = window.location.href.match(/[?&]country=([^&]+)/)) {
-        country = r[1];
+        country = decodeURI(r[1]);
       }
 
       const country_data = data[country];
