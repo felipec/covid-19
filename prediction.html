@@ -53,6 +53,7 @@
         i = n - s - r;
 
         factor += factor_change;
+        if (factor < 1.0) factor = 1.0;
         b = getB(factor, n, i + r, r);
       }
 
