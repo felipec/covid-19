@@ -83,16 +83,16 @@
       });
 
       function getGrowthFactor(data, day) {
-        const span = 14;
+        const span = 3;
         let sum = 0, total = 0;
-        for (let x = day - span; x <= day; x += 1) {
+        for (let x = day - span + 1; x <= day; x += 1) {
           sum += data[x].confirmed;
           total += data[x - 1].confirmed;
         }
         return sum / total;
       }
 
-      const prev_days = 3;
+      const prev_days = 5;
       const last_rate = getGrowthFactor(country_data, country_data.length - 1);
       const prev_rate = getGrowthFactor(country_data, country_data.length - 1 - prev_days);
       const rate_change = (last_rate - prev_rate) / prev_days;
