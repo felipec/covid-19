@@ -28,9 +28,12 @@
       'Spain': 47_100_396,
     };
 
+    function getB(factor, n, confirmed, recovered) {
+      return ((factor - 1) * confirmed * n) / ((n - confirmed) * (confirmed - recovered));
+    }
+
     function model(n, factor, factor_change, confirmed, day, recovered = 0) {
-      let r0 = (factor - 1) * recovery_days;
-      let g = (1 / recovery_days), b = r0 * g;
+      let g = (1 / recovery_days), b = getB(factor, n, confirmed, recovered);
 
       let result = [];
 
@@ -50,8 +53,7 @@
         i = n - s - r;
 
         factor += factor_change;
-        r0 = (factor - 1) * recovery_days;
-        b = r0 * g;
+        b = getB(factor, n, i + r, r);
       }
 
       return result;
