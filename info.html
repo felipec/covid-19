@@ -1,0 +1,207 @@
+<!doctype html>
+
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <title>Coronavirus information</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+    <style>
+      body {
+        background-color: hsl(0, 0%, 95%);
+        font-family: sans-serif;
+        display: flex;
+        height: 100vh;
+        margin: 0;
+      }
+      .block {
+        margin: 10px;
+      }
+      #bar {
+        background-color: hsl(0, 0%, 85%, 50%);
+      }
+      #main {
+        flex: auto;
+        min-width: 0;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        grid-gap: 8px;
+      }
+      label { font-weight: bold; color: #0008; }
+      .value { text-align: right; font-family: monospace; color: #040; }
+      hr { border-top: 2px dotted black; }
+    </style>
+  </head>
+
+  <body>
+    <div id="bar">
+      <div id="input" class="block">
+        <select v-model="country">
+          <option v-for="country in countries">
+            {{ country }}
+          </option>
+        </select>
+      </div>
+      <hr>
+      <div id="info" class="grid block">
+        <label>Confirmed</label>
+        <div class="value">{{ confirmed | number }}</div>
+        <label>Deaths</label>
+        <div class="value">{{ deaths | number }}</div>
+        <label>Recovered</label>
+        <div class="value">{{ recovered | number }}</div>
+      </div>
+    </div>
+    <div id="main">
+      <canvas id="chart"></canvas>
+    </div>
+  </body>
+
+  <script>
+    var number = new Intl.NumberFormat();
+
+    Vue.filter('number', v => number.format(v));
+
+    var input = new Vue({
+      el: '#input',
+      data: {
+        country: '',
+        countries: [],
+      },
+      watch: {
+        country: function (value) {
+          changeCountry(value);
+        }
+      },
+    })
+
+    var info = new Vue({
+      el: '#info',
+      data: {
+        confirmed: 0,
+        deaths: 0,
+        recovered: 0,
+      }
+    })
+
+    var chart = new Chart('chart', {
+      type: 'line',
+      data: {
+        labels: [],
+        datasets: [],
+      },
+      options: {
+        resposive: true,
+        maintainAspectRatio: true,
+        aspectRatio: 2,
+        legend: { position: 'bottom' },
+        elements: {
+          line: {
+            fill: false,
+            borderWidth: 2,
+            lineTension: 0,
+          },
+        },
+        tooltips: {
+          mode: 'x',
+          bodyAlign: 'right',
+          itemSort: (a, b) => b.yLabel - a.yLabel,
+          callbacks: {
+            label: (item, data) => {
+              return data.datasets[item.datasetIndex].label + ': ' + number.format(item.yLabel);
+            },
+          },
+        },
+        scales: {
+          xAxes: [{
+            scaleLabel: { labelString: 'Days after 100 cases', display: true, },
+          }],
+          yAxes: [{
+            scaleLabel: { display: true, },
+            ticks: {
+              callback: (value) => number.format(value),
+            },
+          }],
+        },
+      },
+    });
+
+    var data;
+    var filter;
+
+    function updateChart(country) {
+      chart.data.datasets = [];
+
+      let countries = [
+        { id: 'Turkey', color: 'hsl(0, 75%, 50%)' },
+        { id: 'US', color: 'hsl(30, 75%, 50%)' },
+        { id: 'Spain', color: 'hsl(60, 75%, 50%)' },
+        { id: 'Italy', color: 'hsl(90, 75%, 50%)' },
+        { id: 'Iran', color: 'hsl(120, 75%, 50%)' },
+        { id: 'United Kingdom', color: 'hsl(150, 75%, 50%)' },
+        { id: 'Korea, South', color: 'hsl(180, 75%, 50%)' },
+        { id: 'Japan', color: 'hsl(200, 75%, 50%)' },
+        { id: 'Singapore', color: 'hsl(210, 75%, 50%)' },
+      ];
+
+      const n = {
+        id: country,
+        color: 'hsl(280, 75%, 50%)',
+        params: { borderWidth: 4, pointStyle: 'rectRot' },
+      };
+      countries = countries.filter(e => e.id != n.id);
+      countries.unshift(n);
+
+      for (const {id, color, params} of countries) {
+        const dataset = {
+          label: id,
+          data: filter(data[id]),
+          borderColor: color,
+          backgroundColor: color,
+        };
+
+        if (params) Object.assign(dataset, params);
+        chart.data.datasets.push(dataset);
+      }
+
+      const max_days = chart.data.datasets.reduce((accum, e) => Math.max(accum, e.data.length), 0);
+      chart.data.labels = Array.apply(null, Array(max_days)).map((e, i) => i + 1);
+      chart.update();
+    }
+
+    function changeCountry(country) {
+      const country_data = data[country];
+      const last = country_data[country_data.length - 1];
+
+      info.confirmed = last.confirmed;
+      info.deaths = last.deaths;
+      info.recovered = last.recovered;
+
+      updateChart(country);
+    }
+
+    async function start() {
+      const response = await fetch('https://pomber.github.io/covid19/timeseries.json');
+      data = await response.json();
+
+      input.countries = Object.keys(data);
+      input.country = 'US';
+    }
+
+    chart.options.scales.yAxes[0].scaleLabel.labelString = 'Number of cases';
+    chart.options.scales.yAxes[0].type = 'logarithmic';
+    const axis = chart.options.scales.yAxes[0];
+    if (axis.type == 'logarithmic') {
+      axis.ticks.callback = (value) => {
+        return Number.isInteger(Math.log10(value)) ? number.format(value) : null;
+      };
+    }
+
+    filter = data => data.map(e => e.confirmed).filter(e => e >= 100);
+    start();
+  </script>
+
+</html>
