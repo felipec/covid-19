@@ -63,6 +63,8 @@
         <div class="value">{{ active_gf | perc }}</div>
         <label>New growth</label>
         <div class="value">{{ recent_gf | perc }}</div>
+        <label>Rolling average growth</label>
+        <div class="value">{{ rolling_gf | perc }}</div>
       </div>
     </div>
     <div id="main">
@@ -100,6 +102,7 @@
         confirmed_gf: 0,
         active_gf: 0,
         recent_gf: 0,
+        rolling_gf: 0,
       }
     })
 
@@ -188,6 +191,16 @@
       chart.update();
     }
 
+    function getGrowthFactor(data, day) {
+      const span = 4;
+      let sum = 0, total = 0;
+      for (let x = day - span + 1; x <= day; x += 1) {
+        sum += data[x].confirmed;
+        total += data[x - 1].confirmed;
+      }
+      return sum / total;
+    }
+
     function changeCountry(country) {
       const country_data = data[country];
       const n = country_data.length;
@@ -206,6 +219,7 @@
         (prev.confirmed - (prev.deaths + prev.recovered))) - 1;
       info.recent_gf = ((country_data[n - 1].confirmed - country_data[n - 2].confirmed) /
         (country_data[n - 2].confirmed - country_data[n - 3].confirmed)) - 1;
+      info.rolling_gf = getGrowthFactor(country_data, n - 1) - 1;
 
       updateChart(country);
     }
