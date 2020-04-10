@@ -53,6 +53,16 @@
         <div class="value">{{ deaths | number }}</div>
         <label>Recovered</label>
         <div class="value">{{ recovered | number }}</div>
+        <label>Active</label>
+        <div class="value">{{ active | number }}</div>
+        <label>New</label>
+        <div class="value">{{ recent | number }}</div>
+        <label>Confirmed growth</label>
+        <div class="value">{{ confirmed_gf | perc }}</div>
+        <label>Active growth</label>
+        <div class="value">{{ active_gf | perc }}</div>
+        <label>New growth</label>
+        <div class="value">{{ recent_gf | perc }}</div>
       </div>
     </div>
     <div id="main">
@@ -64,6 +74,7 @@
     var number = new Intl.NumberFormat();
 
     Vue.filter('number', v => number.format(v));
+    Vue.filter('perc', v => (v * 100).toFixed(2) + '%');
 
     var input = new Vue({
       el: '#input',
@@ -84,6 +95,11 @@
         confirmed: 0,
         deaths: 0,
         recovered: 0,
+        active: 0,
+        recent: 0,
+        confirmed_gf: 0,
+        active_gf: 0,
+        recent_gf: 0,
       }
     })
 
@@ -174,11 +190,22 @@
 
     function changeCountry(country) {
       const country_data = data[country];
-      const last = country_data[country_data.length - 1];
+      const n = country_data.length;
+      const current = country_data[n - 1];
+      const prev = country_data[n - 2];
 
-      info.confirmed = last.confirmed;
-      info.deaths = last.deaths;
-      info.recovered = last.recovered;
+      info.confirmed = current.confirmed;
+      info.deaths = current.deaths;
+      info.recovered = current.recovered;
+
+      info.active = current.confirmed - (current.deaths + current.recovered);
+      info.recent = current.confirmed - prev.confirmed;
+
+      info.confirmed_gf = (current.confirmed / prev.confirmed) - 1;
+      info.active_gf = ((current.confirmed - (current.deaths + current.recovered)) /
+        (prev.confirmed - (prev.deaths + prev.recovered))) - 1;
+      info.recent_gf = ((country_data[n - 1].confirmed - country_data[n - 2].confirmed) /
+        (country_data[n - 2].confirmed - country_data[n - 3].confirmed)) - 1;
 
       updateChart(country);
     }
