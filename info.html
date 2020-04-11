@@ -65,6 +65,8 @@
         <div class="value">{{ recent_gf | perc }}</div>
         <label>Rolling average growth</label>
         <div class="value">{{ rolling_gf | perc }}</div>
+        <label>7-day prediction</label>
+        <div class="value">{{ prediction | number }}</div>
       </div>
     </div>
     <div id="main">
@@ -103,6 +105,7 @@
         active_gf: 0,
         recent_gf: 0,
         rolling_gf: 0,
+        prediction: 0,
       }
     })
 
@@ -201,6 +204,15 @@
       return sum / total;
     }
 
+    function getPrediction(confirmed, factor, factor_change, days) {
+      for (let x = 0; x < days; x++) {
+        confirmed = confirmed * factor;
+        factor += factor_change;
+        if (factor < 1.0) factor = 1.0;
+      }
+      return confirmed;
+    }
+
     function changeCountry(country) {
       const country_data = data[country];
       const n = country_data.length;
@@ -220,6 +232,11 @@
       info.recent_gf = ((country_data[n - 1].confirmed - country_data[n - 2].confirmed) /
         (country_data[n - 2].confirmed - country_data[n - 3].confirmed)) - 1;
       info.rolling_gf = getGrowthFactor(country_data, n - 1) - 1;
+
+      const prev_rolling_gf = getGrowthFactor(country_data, n - 1 - 5) - 1;
+      const rate_change = (info.rolling_gf - prev_rolling_gf) / 5;
+
+      info.prediction = getPrediction(info.confirmed, 1 + info.rolling_gf, rate_change, 7).toFixed(0);
 
       updateChart(country);
     }
