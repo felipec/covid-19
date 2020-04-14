@@ -248,7 +248,11 @@
       data = await response.json();
 
       input.countries = Object.keys(data);
-      input.country = 'US';
+      if (r = window.location.href.match(/[?&]country=([^&]+)/)) {
+        input.country = decodeURI(r[1]);
+      } else {
+        input.country = 'US';
+      }
     }
 
     chart.options.scales.yAxes[0].scaleLabel.labelString = 'Number of cases';
