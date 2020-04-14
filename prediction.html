@@ -84,7 +84,7 @@
       });
 
       function getGrowthFactor(data, day) {
-        const span = 3;
+        const span = 5;
         let sum = 0, total = 0;
         for (let x = day - span + 1; x <= day; x += 1) {
           sum += data[x].confirmed;
