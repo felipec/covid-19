@@ -19,6 +19,7 @@
     chart.options.scales.yAxes[0].scaleLabel.labelString = 'Number of cases';
 
     var recovery_days = 16.625;
+    var future_days = 7;
 
     const populations = {
       'US': 329_544_974,
@@ -45,7 +46,7 @@
       let s = n - confirmed;
       let r = recovered;
 
-      for (let x = 0; x <= 7; x++) {
+      for (let x = 0; x <= future_days; x++) {
         result.push(i + r);
 
         r += g * i;

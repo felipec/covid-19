@@ -234,8 +234,9 @@
         (country_data[n - 2].confirmed - country_data[n - 3].confirmed)) - 1;
       info.rolling_gf = getGrowthFactor(country_data, n - 1) - 1;
 
-      const prev_rolling_gf = getGrowthFactor(country_data, n - 1 - 5) - 1;
-      const rate_change = (info.rolling_gf - prev_rolling_gf) / 5;
+      const prev_days = 5;
+      const prev_rolling_gf = getGrowthFactor(country_data, n - 1 - prev_days) - 1;
+      const rate_change = (info.rolling_gf - prev_rolling_gf) / prev_days;
 
       info.prediction = getPrediction(info.confirmed, 1 + info.rolling_gf, rate_change, 7).toFixed(0);
 
