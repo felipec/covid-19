@@ -18,14 +18,23 @@
   <script>
     chart.options.scales.yAxes[0].scaleLabel.labelString = 'Rolling average growth factor';
 
-    var days = 22;
+    var days = 5;
+
+    function getGrowthFactor(data, day) {
+      const span = days;
+      let sum = 0, total = 0;
+      for (let x = day - span + 1; x <= day; x += 1) {
+        sum += data[x].confirmed;
+        total += data[x - 1].confirmed;
+      }
+      return sum / total;
+    }
 
     start(data => {
       let result = [];
       for (const [i, e] of data.entries()) {
         if (e.confirmed < 100 || i < days || !data[i - days].confirmed) continue;
-        const rate = (data[i].confirmed / data[i - days].confirmed) ** (1 / days);
-        result.push(rate);
+        result.push(getGrowthFactor(data, i));
       }
       return result;
     });
